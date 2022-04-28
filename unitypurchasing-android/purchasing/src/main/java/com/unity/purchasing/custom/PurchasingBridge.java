@@ -6,13 +6,13 @@ import android.util.Log;
 import com.unity.purchasing.common.IStoreCallback;
 import com.unity.purchasing.common.IUnityCallback;
 import com.unity.purchasing.common.InitializationFailureReason;
-import com.unity.purchasing.common.ProductDefinition;
 import com.unity.purchasing.common.ProductDescription;
 import com.unity.purchasing.common.ProductMetadata;
 import com.unity.purchasing.common.ProductType;
 import com.unity.purchasing.common.PurchaseFailureDescription;
 import com.unity.purchasing.common.PurchaseFailureReason;
 import com.unity.purchasing.common.UnityPurchasing;
+import com.unity.purchasing.custom.util.CustomProductDefination;
 import com.unity.purchasing.custom.util.IabResult;
 import com.unity.purchasing.custom.util.Inventory;
 import com.unity.purchasing.custom.util.Purchase;
@@ -40,7 +40,7 @@ public class PurchasingBridge {
     private final IabHelper helper;
     private String pendingJsonProducts = null;
     private HashMap<String, Purchase> purchases;
-    private Map<String, ProductDefinition> definedProducts;
+    private Map<String, CustomProductDefination> definedProducts;
 
     public static void log(String message) {
         if (debugMode)
@@ -108,10 +108,9 @@ public class PurchasingBridge {
             JSONArray jsonArray = new JSONArray(pendingJsonProducts);
             for (int i = 0; i < jsonArray.length(); ++i) {
                 JSONObject value = jsonArray.getJSONObject(i);
-                ProductDefinition product = new ProductDefinition(value.getString("storeSpecificId"),
-                        ProductType.valueOf(value.getString("type")));
-                definedProducts.put(product.id, product);
-                skusList.add(product.id);
+                CustomProductDefination product = new CustomProductDefination(value);
+                definedProducts.put(product.base.id, product);
+                skusList.add(product.base.id);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -144,52 +143,59 @@ public class PurchasingBridge {
 
             log("Query inventory was successful.");
 
-            purchases = new HashMap<>();
-            for (Purchase purchase : inv.getAllPurchases()) {
-                purchases.put(purchase.getSku(), purchase);
+        purchases = new HashMap<>();
+
+        List<ProductDescription> productDescriptions = new ArrayList<>();
+        for (CustomProductDefination product : definedProducts.values()) {
+            String sku = product.base.id;
+            SkuDetails skuDetails = null;
+            if (inv != null) {
+                skuDetails = inv.getSkuDetails(sku);
             }
 
-            List<ProductDescription> productDescriptions = new ArrayList<>();
-            for (SkuDetails skuDetails : inv.getAllProducts()) {
-                String sku = skuDetails.getSku();
-                String price = uniformPrices(skuDetails.getPrice());
-                ProductMetadata metadata = new ProductMetadata(
-                        price,
-                        skuDetails.getTitle(),
-                        skuDetails.getDescription(),
-                        "IRR",
-                        new BigDecimal(parsePrice(price))
-                );
-                String receipt = "";
-                String transactionId = "";
+            String price = skuDetails != null ? uniformPrices(skuDetails.getPrice()) : String.valueOf(product.initialPrice);
+            ProductMetadata metadata = new ProductMetadata(
+                    price,
+                    skuDetails != null ? skuDetails.getTitle() : "",
+                    skuDetails != null ? skuDetails.getDescription() : product.description,
+                    "IRR",
+                    skuDetails != null ? new BigDecimal(parsePrice(price)) : BigDecimal.valueOf(product.initialPrice)
+            );
+            String receipt = "";
+            String transactionId = "";
 
-                // Bind purchase and Consume consumable one
+            // Bind purchase and Consume consumable one
+            if (inv != null) {
                 Purchase purchase = inv.getPurchase(sku);
                 if (purchase != null) {
+                    purchases.put(sku, purchase);
                     receipt = purchase.getToken();
                     transactionId = purchase.getOrderId();
-                    if (definedProducts.get(sku).type.equals(ProductType.Consumable)) {
+                    if (definedProducts.get(sku).base.type.equals(ProductType.Consumable)) {
                         unityCallback.OnPurchaseSucceeded(sku, receipt, transactionId);
                     }
                 }
-                productDescriptions.add(new ProductDescription(sku, metadata, receipt, transactionId));
             }
-
-            unityCallback.OnProductsRetrieved(productDescriptions);
+            productDescriptions.add(new ProductDescription(sku, metadata, receipt, transactionId));
         }
-    };
+
+        unityCallback.OnProductsRetrieved(productDescriptions);
+    }
 
     public void Purchase(String productJSON, String developerPayload) {
         log("Purchase " + productJSON);
-        if (helper == null || helper.mDisposed) {
-            PurchaseFailureDescription description = new PurchaseFailureDescription("", PurchaseFailureReason.BillingUnavailable, "Helper not Found!", "");
+
+        String sku = getSKUFromJson(productJSON);
+        CustomProductDefination product = definedProducts.get(sku);
+        if (product == null) {
+            PurchaseFailureDescription description = new PurchaseFailureDescription(sku, PurchaseFailureReason.BillingUnavailable, "Json is invalid.", "");
             PurchasingBridge.unityCallback.OnPurchaseFailed(description);
             return;
         }
 
-        ProductDefinition product = getProductFromJson(productJSON);
-        if (product == null) {
-            PurchaseFailureDescription description = new PurchaseFailureDescription("", PurchaseFailureReason.BillingUnavailable, "Json is invalid.", "");
+
+        if (helper == null || helper.mDisposed) {
+            PurchaseFailureDescription description = new PurchaseFailureDescription(sku, PurchaseFailureReason.BillingUnavailable, "Helper not Found!", "");
             PurchasingBridge.unityCallback.OnPurchaseFailed(description);
             return;
         }
@@ -224,13 +230,12 @@ public class PurchasingBridge {
 //            }
             unityCallback.OnPurchaseSucceeded(purchase.getSku(), purchase.getToken(), purchase.getOrderId());
         }
-
     };
 
     public void FinishTransaction(String productJSON, String transactionID) {
         log("Finishing transaction " + productJSON + " - " + transactionID);
-        ProductDefinition product = getProductFromJson(productJSON);
-        if (product == null || !product.type.equals(ProductType.Consumable)) {
+        CustomProductDefination product = definedProducts.get(getSKUFromJson(productJSON));
+        if (product == null || !product.base.type.equals(ProductType.Consumable)) {
             return;
         }
 
@@ -291,17 +296,13 @@ public class PurchasingBridge {
         return _price;
     }
 
-    private ProductDefinition getProductFromJson(String productJSON) {
-        ProductDefinition product;
+    private String getSKUFromJson(String productJSON) {
         try {
             JSONObject json = new JSONObject(productJSON);
-            product = new ProductDefinition(
-                    json.getString("storeSpecificId"),
-                    ProductType.valueOf(json.getString("type")));
+            return json.getString("storeSpecificId");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
-        return product;
     }
 }
