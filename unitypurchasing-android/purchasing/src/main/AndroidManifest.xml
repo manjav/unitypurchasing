@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.unity.purchasing.custom"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.unity.purchasing.custom">
+
+    <application>
+        <activity
+            android:name=".ZarinpalActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+    </application>
+</manifest>
