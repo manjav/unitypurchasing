@@ -1,0 +1,5 @@
+
+include ':app'
+include ':common'
+include ':purchasing'
+rootProject.name = "unitypurchasing"
