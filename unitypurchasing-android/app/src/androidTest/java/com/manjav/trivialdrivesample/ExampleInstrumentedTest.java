@@ -1,4 +1,4 @@
-package com.sample.android.trivialdrivesample;
+package com.manjav.trivialdrivesample;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.sample.android.trivialdrivesample", appContext.getPackageName());
+        assertEquals("com.manjav.trivialdrivesample", appContext.getPackageName());
     }
 }

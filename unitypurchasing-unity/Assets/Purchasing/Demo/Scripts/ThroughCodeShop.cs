@@ -24,7 +24,7 @@ public class ThroughCodeShop : CodelessShop, IStoreListener
         //Add products that will be purchasable and indicate its type.
         builder.AddProduct("gas", ProductType.Consumable);
         builder.AddProduct("premium", ProductType.NonConsumable);
-        builder.AddProduct("infinite_gas_monthly", ProductType.Subscription);
+        builder.AddProduct("infinite_gas", ProductType.Subscription);
 
         UnityPurchasing.Initialize(this, builder);
     }

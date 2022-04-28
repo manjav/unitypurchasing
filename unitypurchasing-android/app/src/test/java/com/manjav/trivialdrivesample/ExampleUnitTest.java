@@ -1,4 +1,4 @@
-package com.sample.android.trivialdrivesample;
+package com.manjav.trivialdrivesample;
 
 import org.junit.Test;
 

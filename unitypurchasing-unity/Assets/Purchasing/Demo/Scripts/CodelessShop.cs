@@ -11,7 +11,7 @@ public class CodelessShop : MonoBehaviour
     {
         switch (productId)
         {
-            case "infinite_gas_monthly":
+            case "infinite_gas":
                 vehicle.SetGas(5);
                 break;
             case "gas":

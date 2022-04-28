@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sample.android.trivialdrivesample">
+    package="com.manjav.trivialdrivesample">
 
-    <uses-permission android:name="ir.mservices.market.BIND" />
+    <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />
 
     <queries>
-        <package android:name="ir.mservices.market" />
-        <intent>
-            <action android:name="ir.mservices.market.InAppBillingService.BIND" />
-            <data android:mimeType="*/*" />
-        </intent>
+        <package android:name="com.farsitel.bazaar" />
+
     </queries>
 
     <application
@@ -34,12 +31,12 @@
             android:name="com.unity.purchasing.custom.util.IABReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="ir.mservices.market.ping" />
-                <action android:name="ir.mservices.market.purchase" />
-                <action android:name="ir.mservices.market.getPurchase" />
-                <action android:name="ir.mservices.market.billingSupport" />
-                <action android:name="ir.mservices.market.skuDetail" />
-                <action android:name="ir.mservices.market.consume" />
+                <action android:name="com.farsitel.bazaar.ping" />
+                <action android:name="com.farsitel.bazaar.purchase" />
+                <action android:name="com.farsitel.bazaar.getPurchase" />
+                <action android:name="com.farsitel.bazaar.billingSupport" />
+                <action android:name="com.farsitel.bazaar.skuDetail" />
+                <action android:name="com.farsitel.bazaar.consume" />
             </intent-filter>
         </receiver>
     </application>

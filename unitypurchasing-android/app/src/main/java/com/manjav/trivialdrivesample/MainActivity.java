@@ -1,4 +1,4 @@
-package com.sample.android.trivialdrivesample;
+package com.manjav.trivialdrivesample;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
     }
 
     public void retrieveProducts(View view) {
-        purchasing.RetrieveProducts("[{\"id\":\"gas\",\"storeSpecificId\":\"gas\",\"type\":\"Consumable\",\"enabled\":true,\"payouts\":[]},{\"id\":\"premium\",\"storeSpecificId\":\"premium\",\"type\":\"NonConsumable\",\"enabled\":true,\"payouts\":[]},{\"id\":\"infinite_gas_monthly\",\"storeSpecificId\":\"infinite_gas_monthly\",\"type\":\"Subscription\",\"enabled\":true,\"payouts\":[]}]");
+        purchasing.RetrieveProducts("[{\"id\":\"gas\",\"storeSpecificId\":\"gas\",\"type\":\"Consumable\",\"enabled\":true,\"payouts\":[]},{\"id\":\"premium\",\"storeSpecificId\":\"premium\",\"type\":\"NonConsumable\",\"enabled\":true,\"payouts\":[]},{\"id\":\"infinite_gas\",\"storeSpecificId\":\"infinite_gas\",\"type\":\"Subscription\",\"enabled\":true,\"payouts\":[]}]");
     }
 
     public void purchase(View view) {
