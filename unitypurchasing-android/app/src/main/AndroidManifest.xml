@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.manjav.trivialdrivesample">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />
 
     <queries>
         <package android:name="com.farsitel.bazaar" />
-
     </queries>
 
     <application

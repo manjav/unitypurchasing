@@ -54,7 +54,6 @@ public class MainActivity extends Activity {
         purchasing.Purchase("{\"id\":\"gas\",\"storeSpecificId\":\"gas\",\"type\":\"Consumable\",\"enabled\":true,\"payouts\":[]}", "payload");
     }
 
-
     public void finishTransaction(View view) {
         purchasing.FinishTransaction("{\"id\":\"gas\",\"storeSpecificId\":\"gas\",\"type\":\"Consumable\",\"enabled\":true,\"payouts\":[]}", transactionID);
     }

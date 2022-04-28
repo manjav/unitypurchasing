@@ -1,6 +1,7 @@
 package com.unity.purchasing.custom;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 
 import com.unity.purchasing.common.IStoreCallback;
@@ -32,13 +33,16 @@ import java.util.Map;
 public class PurchasingBridge {
 
     public static String TAG = "Purchasing";
+    private static String ZARINPAL = "zarinpal";
     private static boolean debugMode = true;
+
     public static IStoreCallback unityCallback;
     public static Activity testActivity;
     private static PurchasingBridge instance;
 
-    private final IabHelper helper;
+    private IabHelper helper;
     private String pendingJsonProducts = null;
+    private final String storePackageName;
     private HashMap<String, Purchase> purchases;
     private Map<String, CustomProductDefination> definedProducts;
 
@@ -73,8 +77,16 @@ public class PurchasingBridge {
         return null;
     }
 
-    public PurchasingBridge(IStoreCallback callback, String storePackageName, String bindURL) {
+    public PurchasingBridge(IStoreCallback callback, String packageName, String bindURL) {
         unityCallback = callback;
+        storePackageName = packageName;
+        log("Setup start. " + storePackageName + " " + ZARINPAL);
+        if (storePackageName.equals(ZARINPAL)) {
+            if (pendingJsonProducts != null)
+                RetrieveProducts(pendingJsonProducts);
+            return;
+        }
+
         helper = new IabHelper(getActivity(), storePackageName, bindURL);
         helper.enableDebugLogging(true);
         helper.startSetup(result -> {
@@ -96,7 +108,7 @@ public class PurchasingBridge {
     public void RetrieveProducts(String json) {
         log("RetrieveProducts " + json);
         pendingJsonProducts = json;
-        if (helper == null || helper.mDisposed) {
+        if (!storePackageName.equals(ZARINPAL) && (helper == null || helper.mDisposed)) {
             unityCallback.OnSetupFailed(InitializationFailureReason.PurchasingUnavailable);
             return;
         }
@@ -117,6 +129,11 @@ public class PurchasingBridge {
             unityCallback.OnSetupFailed(InitializationFailureReason.NoProductsAvailable);
         }
         pendingJsonProducts = null;
+
+        if (storePackageName.equals(ZARINPAL)) {
+            fillProductDescription(null);
+            return;
+        }
 
         // Query SkuDetails
         helper.queryInventoryAsync(true, skusList, mGotInventoryListener);
@@ -142,7 +159,11 @@ public class PurchasingBridge {
             }
 
             log("Query inventory was successful.");
+            fillProductDescription(inv);
+        }
+    };
 
+    private void fillProductDescription(Inventory inv) {
         purchases = new HashMap<>();
 
         List<ProductDescription> productDescriptions = new ArrayList<>();
@@ -193,6 +214,17 @@ public class PurchasingBridge {
             return;
         }
 
+        if (storePackageName.equals(ZARINPAL)) {
+            Intent i = new Intent(getActivity(), ZarinpalActivity.class);
+            i.putExtra("sku", product.base.id);
+            i.putExtra("amount", product.initialPrice);
+            i.putExtra("merchantId", product.initialStoreId);
+            i.putExtra("callbackURL", "zarin://" + sku);
+            i.putExtra("description", product.description);
+            i.putExtra("autoVerification", product.base.type == ProductType.Consumable);
+            getActivity().startActivity(i);
+            return;
+        }
 
         if (helper == null || helper.mDisposed) {
             PurchaseFailureDescription description = new PurchaseFailureDescription(sku, PurchaseFailureReason.BillingUnavailable, "Helper not Found!", "");
@@ -200,7 +232,7 @@ public class PurchasingBridge {
             return;
         }
 
-        helper.launchPurchaseFlow(getActivity(), product.id, mPurchaseFinishedListener, developerPayload);
+        helper.launchPurchaseFlow(getActivity(), product.base.id, mPurchaseFinishedListener, developerPayload);
     }
 
     // Callback for when a purchase is finished
@@ -210,13 +242,13 @@ public class PurchasingBridge {
 
             // if we were disposed of in the meantime, quit.
             if (helper == null || helper.mDisposed) {
-                PurchaseFailureDescription description = new PurchaseFailureDescription("", PurchaseFailureReason.BillingUnavailable, "Helper not Found!", "");
+                PurchaseFailureDescription description = new PurchaseFailureDescription(purchase.getSku(), PurchaseFailureReason.BillingUnavailable, "Helper not Found!", "");
                 PurchasingBridge.unityCallback.OnPurchaseFailed(description);
                 return;
             }
 
             if (result.isFailure()) {
-                PurchaseFailureDescription description = getProperDescription(result);
+                PurchaseFailureDescription description = getProperDescription(purchase.getSku(), result.getResponse(), result.getMessage());
                 PurchasingBridge.unityCallback.OnPurchaseFailed(description);
                 return;
             }
@@ -239,7 +271,12 @@ public class PurchasingBridge {
             return;
         }
 
-        Purchase purchase = purchases.get(product.id);
+        if (storePackageName.equals(ZARINPAL)) {
+            ZarinpalActivity.verify(getActivity(), product, transactionID);
+            return;
+        }
+
+        Purchase purchase = purchases.get(product.base.id);
         helper.consumeAsync(purchase, mConsumeFinishedListener);
     }
 
@@ -263,8 +300,8 @@ public class PurchasingBridge {
     };
 
 
-    private PurchaseFailureDescription getProperDescription(IabResult result) {
-        return new PurchaseFailureDescription("", PurchaseFailureReason.Unknown, "Need to detect problem!", result.getMessage());
+    public static PurchaseFailureDescription getProperDescription(String sku, int response, String message) {
+        return new PurchaseFailureDescription(sku, PurchaseFailureReason.Unknown, message, "Needs to detect!");
     }
 
     private String uniformPrices(String price) {
