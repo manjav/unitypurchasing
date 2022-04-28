@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TrivialdriveSample</string>
+    <string name="init">Init</string>
+    <string name="purchase">Purchase</string>
+    <string name="retrieve_products">RetrieveProducts</string>
+    <string name="finish_transaction">Finish Transaction</string>
+</resources>
