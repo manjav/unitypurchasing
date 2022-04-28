@@ -44,24 +44,15 @@ namespace UnityEngine.Purchasing
                     }
 
                 case AppStore.Cafebazaar:
-                    using (var pluginClass = new AndroidJavaClass("com.unity.purchasing.custom.PurchasingBridge"))
-                    {
-                        // Switch Android callbacks to the scripting thread, via ScriptingUnityCallback.
-                        var proxy = new JavaBridge(new ScriptingUnityCallback(callback, util));
-                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy, "com.farsitel.bazaar", "ir.cafebazaar.pardakht.InAppBillingService.BIND");
-                        // Hook up our cafebazaar specific functionality.
-                        var extensions = new CafebazaarStoreExtensions(instance);
-                        return new AndroidJavaStore(instance);
-                    }
-                    
                 case AppStore.Myket:
+                    StoreData storeData = StoreData.data[store];
                     using (var pluginClass = new AndroidJavaClass("com.unity.purchasing.custom.PurchasingBridge"))
                     {
                         // Switch Android callbacks to the scripting thread, via ScriptingUnityCallback.
                         var proxy = new JavaBridge(new ScriptingUnityCallback(callback, util));
-                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy, "ir.mservices.market", "ir.mservices.market.InAppBillingService.BIND");
+                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy, storeData.storePackageName, storeData.bindURL);
                         // Hook up our cafebazaar specific functionality.
-                        var extensions = new CafebazaarStoreExtensions(instance);
+                        var extensions = new CustomStoreExtensions(instance);
                         return new AndroidJavaStore(instance);
                     }
 
