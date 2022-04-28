@@ -1,4 +1,4 @@
-namespace UnityEngine.Purchasing
+﻿namespace UnityEngine.Purchasing
 {
     /// <summary>
     /// The type of Native App store being used.
@@ -40,6 +40,15 @@ namespace UnityEngine.Purchasing
         /// </summary>
         WinRT,
 
+        /// <summary>
+        /// Cafebazaar App Store.
+        /// </summary>
+        Cafebazaar,
+
+        /// <summary>
+        /// Myket App Store.
+        /// </summary>
+        Myket,
 
         /// <summary>
         /// A fake store used for testing and Play-In-Editor.

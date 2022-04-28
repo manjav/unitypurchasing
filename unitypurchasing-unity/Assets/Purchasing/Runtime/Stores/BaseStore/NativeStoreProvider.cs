@@ -43,6 +43,18 @@ namespace UnityEngine.Purchasing
                         return new AndroidJavaStore (instance);
                     }
 
+                 case AppStore.Cafebazaar:
+                 case AppStore.Myket:
+                    using (var pluginClass = new AndroidJavaClass("com.farsitel.bazaar.BazaarPurchasing"))
+                    {
+                        // Switch Android callbacks to the scripting thread, via ScriptingUnityCallback.
+                        var proxy = new JavaBridge(new ScriptingUnityCallback(callback, util));
+                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy);
+                        // Hook up our cafebazaar specific functionality.
+                        var extensions = new CafebazaarStoreExtensions(instance);
+                        return new AndroidJavaStore(instance);
+                    }
+
                 case AppStore.UDP:
                     {
                         Type udpIapBridge = UdpIapBridgeInterface.GetClassType();
