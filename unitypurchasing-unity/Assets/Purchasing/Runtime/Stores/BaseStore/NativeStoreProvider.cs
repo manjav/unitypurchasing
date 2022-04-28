@@ -43,13 +43,23 @@ namespace UnityEngine.Purchasing
                         return new AndroidJavaStore (instance);
                     }
 
-                 case AppStore.Cafebazaar:
-                 case AppStore.Myket:
-                    using (var pluginClass = new AndroidJavaClass("com.farsitel.bazaar.BazaarPurchasing"))
+                case AppStore.Cafebazaar:
+                    using (var pluginClass = new AndroidJavaClass("com.unity.purchasing.custom.PurchasingBridge"))
                     {
                         // Switch Android callbacks to the scripting thread, via ScriptingUnityCallback.
                         var proxy = new JavaBridge(new ScriptingUnityCallback(callback, util));
-                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy);
+                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy, "com.farsitel.bazaar", "ir.cafebazaar.pardakht.InAppBillingService.BIND");
+                        // Hook up our cafebazaar specific functionality.
+                        var extensions = new CafebazaarStoreExtensions(instance);
+                        return new AndroidJavaStore(instance);
+                    }
+                    
+                case AppStore.Myket:
+                    using (var pluginClass = new AndroidJavaClass("com.unity.purchasing.custom.PurchasingBridge"))
+                    {
+                        // Switch Android callbacks to the scripting thread, via ScriptingUnityCallback.
+                        var proxy = new JavaBridge(new ScriptingUnityCallback(callback, util));
+                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy, "ir.mservices.market", "ir.mservices.market.InAppBillingService.BIND");
                         // Hook up our cafebazaar specific functionality.
                         var extensions = new CafebazaarStoreExtensions(instance);
                         return new AndroidJavaStore(instance);
@@ -80,10 +90,11 @@ namespace UnityEngine.Purchasing
         public INativeAppleStore GetStorekit(IUnityCallback callback)
         {
             // Both tvOS and iOS use the same Objective-C linked to the XCode project.
-            if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
-                return new iOSStoreBindings ();
+            if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS)
+            {
+                return new iOSStoreBindings();
             }
-            return new OSXStoreBindings ();
+            return new OSXStoreBindings();
         }
     }
 }
