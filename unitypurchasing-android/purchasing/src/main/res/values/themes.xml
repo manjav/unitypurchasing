@@ -25,10 +25,22 @@
             @transition/slide_bottom
         </item>
 
+        <item name="android:buttonStyle">@style/Theme.Button</item>
         <item name="android:textViewStyle">@style/Theme.Text</item>
+        <item name="android:editTextStyle">@style/Theme.EditText</item>
         <item name="android:progressBarStyle">@style/Theme.ProgressBar</item>
 
     </style>
+
+    <!--    Button   -->
+    <style name="Theme.Button" parent="@android:style/Widget.Holo.Button">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:background">@drawable/btn_default</item>
+        <item name="android:textFontWeight" tools:targetApi="p">600</item>
+    </style>
+
     <!--    Text   -->
     <style name="Theme.Text" parent="@android:style/Widget.Holo.TextView">
         <item name="android:textSize">16sp</item>
@@ -43,5 +55,12 @@
         <item name="android:textColorHint">@color/secondary</item>
     </style>
 
+    <!--    ProgressBar   -->
+    <style name="Theme.ProgressBar" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
+        <item name="android:shape" tools:targetApi="lollipop">@color/accent</item>
+        <item name="android:progressTint" tools:targetApi="lollipop">@color/accent</item>
+        <item name="android:indeterminateTint" tools:targetApi="lollipop">@color/accent</item>
+        <item name="android:progressBackgroundTint" tools:targetApi="lollipop">@color/primary</item>
+    </style>
 
 </resources>

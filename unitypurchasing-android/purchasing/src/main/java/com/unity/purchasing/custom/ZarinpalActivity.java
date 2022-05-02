@@ -5,11 +5,18 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.unity.purchasing.common.IStoreCallback;
@@ -18,9 +25,12 @@ import com.unity.purchasing.common.PurchaseFailureDescription;
 import com.unity.purchasing.common.PurchaseFailureReason;
 import com.unity.purchasing.custom.util.CustomProductDefination;
 import com.unity.purchasing.custom.util.HttpHelper;
+import com.unity.purchasing.custom.util.Prefs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.prefs.Preferences;
 
 public class ZarinpalActivity extends Activity {
     private static final String REQUEST_URI = "https://api.zarinpal.com/pg/v4/payment/request.json";
@@ -33,6 +43,9 @@ public class ZarinpalActivity extends Activity {
     private String merchantId;
     private String description;
     private WebView webView;
+    private View registerView;
+    private EditText inputText;
+    private ProgressBar progressBar;
     private boolean paymentProceed = false;
 
     @Override
@@ -46,22 +59,46 @@ public class ZarinpalActivity extends Activity {
         merchantId = extras.getString("merchantId");
         callbackURL = extras.getString("callbackURL");
         description = extras.getString("description");
+        webView = findViewById(R.id.webView);
+        progressBar = findViewById(R.id.progressBar);
+        registerView = findViewById(R.id.registerView);
+        inputText = findViewById(R.id.inputText);
     }
 
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
-        requestPayment();
+        startProcess();
     }
 
+    private void startProcess() {
+        if (paymentProceed) {
+            return;
+        }
+        paymentProceed = true;
+
+        TextView titleText = findViewById(R.id.titleText);
+        titleText.setText(description);
+
+        Prefs.setInstance(this);
+        String username = Prefs.getInstance().getString(Prefs.KEY_USERNAME, null);
+        if (username != null && !username.isEmpty()) {
+            inputText.setText(username);
+        }
+    }
+
+    public void registerContact(View view) {
+
+        if (!inputText.getText().equals("")) {
+            Prefs.getInstance().setString(Prefs.KEY_USERNAME, inputText.getText().toString());
+        }
+        hideKeyboard();
+        registerView.setVisibility(View.GONE);
         requestPayment();
     }
 
     private void requestPayment() {
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
+        String username = Prefs.getInstance().getString(Prefs.KEY_USERNAME, null);
 
         JSONObject jsonParam = new JSONObject();
         try {
@@ -69,6 +106,13 @@ public class ZarinpalActivity extends Activity {
             jsonParam.put("callback_url", callbackURL);
             jsonParam.put("description", description);
             jsonParam.put("amount", amount);
+            if (username != null) {
+                if (username.contains("@")) {
+                    jsonParam.put("email", username);
+                } else {
+                    jsonParam.put("mobile", username);
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -181,5 +225,25 @@ public class ZarinpalActivity extends Activity {
                 }
             });
         });
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (registerView.getVisibility() == View.VISIBLE) {
+            registerContact(null);
+            return;
+        }
+        super.onBackPressed();
     }
 }

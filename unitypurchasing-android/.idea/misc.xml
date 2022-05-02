@@ -3,8 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/app/src/main/res/drawable/round_rect.xml" value="0.2385" />
         <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/app/src/main/res/layout/activity_main.xml" value="0.12135416666666667" />
+        <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/purchasing/src/main/res/drawable/btn_default.xml" value="0.195" />
+        <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/purchasing/src/main/res/drawable/btn_default_rect.xml" value="0.195" />
+        <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/purchasing/src/main/res/drawable/btn_down_rect.xml" value="0.3605" />
+        <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/purchasing/src/main/res/drawable/ic_close.xml" value="0.242" />
+        <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/purchasing/src/main/res/drawable/round_rect.xml" value="0.2385" />
+        <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/purchasing/src/main/res/drawable/round_rect_bottom.xml" value="0.242" />
+        <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/purchasing/src/main/res/font/poppins.xml" value="0.26614583333333336" />
         <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/purchasing/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/_projects/_publics/unitypurchasing/unitypurchasing-android/purchasing/src/main/res/layout/activity_zarinpal.xml" value="0.22" />
       </map>
     </option>
   </component>

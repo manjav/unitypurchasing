@@ -46,7 +46,67 @@
             android:layout_gravity="center"
             android:indeterminate="true" />
 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        <LinearLayout
+            android:id="@+id/registerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/round_rect">
+
+                <ImageButton
+                    android:id="@+id/closeButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/ic_close"
+                    android:onClick="registerContact" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="36dp"
+                    android:paddingTop="54dp"
+                    android:paddingBottom="36dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/register_text" />
+
+                    <EditText
+                        android:id="@+id/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="40dp"
+                        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_=+\@."
+                        android:gravity="center"
+                        android:hint="@string/register_hint" />
+
+                    <Button
+                        android:id="@+id/submitButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_alignTop="@+id/inputText"
+                        android:layout_marginTop="76dp"
+                        android:onClick="registerContact"
+                        android:text="@string/register_button" />
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>
