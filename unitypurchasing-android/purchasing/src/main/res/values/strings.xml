@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="register_text">برای پیگیری خرید اطلاعات تماس‌ات رو بذار!</string>
+    <string name="register_hint">شماره تماس یا ایمیل</string>
+    <string name="register_button">ثبت</string>
+</resources>
