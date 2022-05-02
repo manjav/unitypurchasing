@@ -618,6 +618,12 @@ namespace UnityEngine.Purchasing
         /// </summary>
         public Price googlePrice = new Price();
 
+        // Zarinpal configuration fields
+        /// <summary>
+        /// The configs for Zarinpal.
+        /// </summary>
+        public ZarinpalConfig zarinpalConfig = new ZarinpalConfig();
+        
         /// <summary>
         /// The price template for GooglePlay.
         /// </summary>

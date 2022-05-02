@@ -68,7 +68,10 @@ namespace UnityEngine.Purchasing
                             "\n      </intent-filter>" +
                             "\n    </receiver>"
                 }
+            },
+            {
+                AppStore.Zarinpal, new StoreData { storePackageName = "zarinpal", bindURL = ""}
             }
         };
-}
+    }
 }

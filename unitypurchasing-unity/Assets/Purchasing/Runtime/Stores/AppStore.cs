@@ -51,6 +51,11 @@
         Myket,
 
         /// <summary>
+        /// Zarinpal App Store.
+        /// </summary>
+        Zarinpal,
+
+        /// <summary>
         /// A fake store used for testing and Play-In-Editor.
         /// </summary>
         fake

@@ -45,7 +45,8 @@ namespace UnityEngine.Purchasing
             { AppStore.UDP, UDP.Name},
             { AppStore.NotSpecified, GooglePlay.Name },
             { AppStore.Cafebazaar, Cafebazaar.Name },
-            { AppStore.Myket, Myket.Name }
+            { AppStore.Myket, Myket.Name },
+            { AppStore.Zarinpal, Zarinpal.Name }
         };
 
         internal class StoreInstance

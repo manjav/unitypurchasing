@@ -94,6 +94,12 @@ namespace UnityEngine.Purchasing
         /// </summary>
         public bool enabled { get; private set; }
 
+     
+        /// <summary>
+        /// The configs for Zarinpal.
+        /// </summary>
+        public ZarinpalConfig zarinpalConfig { get; private set; }
+
         /// <summary>
         /// Check if this product definition is equal to another.
         /// </summary>
@@ -153,6 +159,11 @@ namespace UnityEngine.Purchasing
 
             m_Payouts.Clear();
             m_Payouts.AddRange(newPayouts);
+        }
+
+        internal void SetStoreConfig(ZarinpalConfig zarinpalConfig)
+        {
+            this.zarinpalConfig = zarinpalConfig;
         }
     }
 }
