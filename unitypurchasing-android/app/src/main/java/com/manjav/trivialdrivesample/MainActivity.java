@@ -1,6 +1,8 @@
 package com.manjav.trivialdrivesample;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,10 +10,17 @@ import android.view.View;
 import com.unity.purchasing.common.IUnityCallback;
 import com.unity.purchasing.custom.PurchasingBridge;
 
+import java.lang.reflect.Array;
+
 public class MainActivity extends Activity {
 
     private PurchasingBridge purchasing;
     private String transactionID = null;
+    private String[] testItems = {
+            "{\"id\":\"gas\",\"storeSpecificId\":\"gas\",\"type\":\"Consumable\",\"enabled\":true,\"payouts\":[], \"zarinpalConfig\":{\"price\":50000, \"merchantId\":\"bc671e64-f8c8-11e6-b953-000c295eb8fc\", \"description\":\"بنزین مصرفی\"}}",
+            "{\"id\":\"premium\",\"storeSpecificId\":\"premium\",\"type\":\"NonConsumable\",\"enabled\":true,\"payouts\":[]}",
+            "{\"id\":\"infinite_gas\",\"storeSpecificId\":\"infinite_gas\",\"type\":\"Subscription\",\"enabled\":true,\"payouts\":[]}"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +55,16 @@ public class MainActivity extends Activity {
         },"ir.mservices.market", "ir.mservices.market.InAppBillingService.BIND");
     }
 
+    @TargetApi(Build.VERSION_CODES.O)
     public void retrieveProducts(View view) {
-        purchasing.RetrieveProducts("[{\"id\":\"gas\",\"storeSpecificId\":\"gas\",\"type\":\"Consumable\",\"enabled\":true,\"payouts\":[]},{\"id\":\"premium\",\"storeSpecificId\":\"premium\",\"type\":\"NonConsumable\",\"enabled\":true,\"payouts\":[]},{\"id\":\"infinite_gas\",\"storeSpecificId\":\"infinite_gas\",\"type\":\"Subscription\",\"enabled\":true,\"payouts\":[]}]");
+        purchasing.RetrieveProducts("[" + String.join(", ", testItems) + "]");
     }
 
     public void purchase(View view) {
-        purchasing.Purchase("{\"id\":\"gas\",\"storeSpecificId\":\"gas\",\"type\":\"Consumable\",\"enabled\":true,\"payouts\":[]}", "payload");
+        purchasing.Purchase(testItems[0], "payload");
     }
 
     public void finishTransaction(View view) {
-        purchasing.FinishTransaction("{\"id\":\"gas\",\"storeSpecificId\":\"gas\",\"type\":\"Consumable\",\"enabled\":true,\"payouts\":[]}", transactionID);
+        purchasing.FinishTransaction(testItems[0], transactionID);
     }
 }
