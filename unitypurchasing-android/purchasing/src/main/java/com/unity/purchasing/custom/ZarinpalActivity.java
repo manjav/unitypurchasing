@@ -32,7 +32,8 @@ public class ZarinpalActivity extends Activity {
     private String sku;
     private String merchantId;
     private String description;
-    private ProgressDialog progressDialog;
+    private WebView webView;
+    private boolean paymentProceed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,13 @@ public class ZarinpalActivity extends Activity {
         merchantId = extras.getString("merchantId");
         callbackURL = extras.getString("callbackURL");
         description = extras.getString("description");
+    }
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        requestPayment();
+    }
 
         requestPayment();
     }
@@ -74,11 +82,11 @@ public class ZarinpalActivity extends Activity {
                             purchase(authority);
                         } else {
                             PurchasingBridge.unityCallback.OnPurchaseFailed(PurchasingBridge.getProperDescription(sku, -1, "Payment Gateway not found."));
-                            finish();
+                            close();
                         }
                     } else {
                         PurchasingBridge.unityCallback.OnPurchaseFailed(PurchasingBridge.getProperDescription(sku, -1, "Network Problem!"));
-                        finish();
+                        close();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -87,10 +95,8 @@ public class ZarinpalActivity extends Activity {
         });
     }
 
-
     private void purchase(String authority) {
 
-        WebView webView = findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(false);
         webView.getSettings().setBuiltInZoomControls(true);
@@ -104,43 +110,48 @@ public class ZarinpalActivity extends Activity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.i("purchasing", "shouldOverrideUrlLoading " + url);
                 view.loadUrl(url);
                 return true;
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (progressDialog.isShowing()) {
-                    progressDialog.dismiss();
+                if (url.contains("shaparak")) {
+                    webView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
 
                 Log.i("purchasing", "onPageFinished " + url);
                 if (url.contains(callbackURL)) {
-                    Uri uri = Uri.parse("http://www.chalklit.in/post.html?chapter=V-Maths-Addition%20&%20Subtraction&post=394");
+                    Uri uri = Uri.parse(url);
                     String status = uri.getQueryParameter("Status");
                     if (status != null && status.equals("OK")) {
                         Log.d("purchasing", "Status OK trying to verify purchase...");
                         String authority = uri.getQueryParameter("Authority");
                         PurchasingBridge.unityCallback.OnPurchaseSucceeded(sku, authority, authority);
                         Log.d("purchasing", "Ignore verifying purchase cause autoVerify is set to false : ");
-                        finish();
+                        close();
                     } else {
                         PurchasingBridge.unityCallback.OnPurchaseFailed(PurchasingBridge.getProperDescription(sku, -1, "Purchase failed!"));
                         Log.d("purchasing", "purchase failed : " + status);
-                        finish();
+                        close();
                     }
                 }
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Toast.makeText(getApplicationContext(), "Error:" + description, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Error:" + description, Toast.LENGTH_SHORT).show();
             }
         });
         webView.loadUrl(PAYMENT_URL + authority);
     }
 
+    private void close() {
+        paymentProceed = false;
+        webView.setVisibility(View.INVISIBLE);
+        finish();
+    }
 
     public static void verify(Activity activity, CustomProductDefination product, String transactionID) {
 
