@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
             public void OnPurchaseFailed(String message) {
                 Log.i(PurchasingBridge.TAG, "OnPurchaseFailed: " + message);
             }
-        },"ir.mservices.market", "ir.mservices.market.InAppBillingService.BIND");
+        },"com.farsitel.bazaar", "ir.cafebazaar.pardakht.InAppBillingService.BIND");
     }
 
     @TargetApi(Build.VERSION_CODES.O)

@@ -47,11 +47,11 @@ namespace UnityEngine.Purchasing
     manifestPermission =    "\n  <uses-permission android:name=\"ir.mservices.market.BIND\" />\n",
         manifestQueries =   "\n  <queries>" +
                             "\n    <package android:name=\"ir.mservices.market\" />"+
-                            "\n      <intent>"+
-                            "\n        <action android:name=\"ir.mservices.market.InAppBillingService.BIND\" />"+
-                            "\n        <data android:mimeType=\"*/*\" />"+
-                            "\n      </intent>"+
-                            "\n    </queries>",
+                            "\n    <intent>"+
+                            "\n      <action android:name=\"ir.mservices.market.InAppBillingService.BIND\" />"+
+                            "\n      <data android:mimeType=\"*/*\" />"+
+                            "\n    </intent>"+
+                            "\n  </queries>",
         manifestActivity =  "\n    <activity"+
                             "\n      android:name=\"com.unity.purchasing.custom.util.ProxyBillingActivity\""+
                             "\n      android:theme=\"@android:style/Theme.Translucent.NoTitleBar.Fullscreen\""+

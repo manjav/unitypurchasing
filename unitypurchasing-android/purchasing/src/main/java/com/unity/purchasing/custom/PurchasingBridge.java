@@ -33,7 +33,7 @@ import java.util.Map;
 public class PurchasingBridge {
 
     public static String TAG = "Purchasing";
-    private static String ZARINPAL = "zarinpal";
+    public static String ZARINPAL = "zarinpal";
     private static boolean debugMode = true;
 
     public static IStoreCallback unityCallback;
@@ -80,7 +80,7 @@ public class PurchasingBridge {
     public PurchasingBridge(IStoreCallback callback, String packageName, String bindURL) {
         unityCallback = callback;
         storePackageName = packageName;
-        log("Setup start. " + storePackageName + " " + ZARINPAL);
+        log("Setup start for " + storePackageName + " " + bindURL);
         if (storePackageName.equals(ZARINPAL)) {
             if (pendingJsonProducts != null)
                 RetrieveProducts(pendingJsonProducts);
@@ -90,7 +90,6 @@ public class PurchasingBridge {
         helper = new IabHelper(getActivity(), storePackageName, bindURL);
         helper.enableDebugLogging(true);
         helper.startSetup(result -> {
-            log("Setup finished.");
 
             if (result.isFailure()) {
                 // Oh noes, there was a problem.
@@ -98,6 +97,7 @@ public class PurchasingBridge {
                 unityCallback.OnSetupFailed(InitializationFailureReason.PurchasingUnavailable);
                 return;
             }
+            log("Setup Succeed.");
 
             // IAB is fully set up. Now, let's get an inventory of stuff we own.
             if (pendingJsonProducts != null)
@@ -108,8 +108,9 @@ public class PurchasingBridge {
     public void RetrieveProducts(String json) {
         log("RetrieveProducts " + json);
         pendingJsonProducts = json;
-        if (!storePackageName.equals(ZARINPAL) && (helper == null || helper.mDisposed)) {
-            unityCallback.OnSetupFailed(InitializationFailureReason.PurchasingUnavailable);
+
+
+        if (!isConnected()) {
             return;
         }
 
@@ -146,7 +147,7 @@ public class PurchasingBridge {
             Log.d(TAG, "Query inventory finished.");
 
             // Have we been disposed of in the meantime? If so, quit.
-            if (helper == null || helper.mDisposed) {
+            if (!isConnected()) {
                 unityCallback.OnSetupFailed(InitializationFailureReason.PurchasingUnavailable);
                 return;
             }
@@ -226,7 +227,7 @@ public class PurchasingBridge {
             return;
         }
 
-        if (helper == null || helper.mDisposed) {
+        if (!isConnected()) {
             PurchaseFailureDescription description = new PurchaseFailureDescription(sku, PurchaseFailureReason.BillingUnavailable, "Helper not Found!", "");
             PurchasingBridge.unityCallback.OnPurchaseFailed(description);
             return;
@@ -241,14 +242,14 @@ public class PurchasingBridge {
             Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
 
             // if we were disposed of in the meantime, quit.
-            if (helper == null || helper.mDisposed) {
+            if (!isConnected()) {
                 PurchaseFailureDescription description = new PurchaseFailureDescription(purchase.getSku(), PurchaseFailureReason.BillingUnavailable, "Helper not Found!", "");
                 PurchasingBridge.unityCallback.OnPurchaseFailed(description);
                 return;
             }
 
             if (result.isFailure()) {
-                PurchaseFailureDescription description = getProperDescription(purchase.getSku(), result.getResponse(), result.getMessage());
+                PurchaseFailureDescription description = getProperDescription("", result.getResponse(), result.getMessage());
                 PurchasingBridge.unityCallback.OnPurchaseFailed(description);
                 return;
             }
@@ -275,9 +276,10 @@ public class PurchasingBridge {
             ZarinpalActivity.verify(getActivity(), product, transactionID);
             return;
         }
-
-        Purchase purchase = purchases.get(product.base.id);
-        helper.consumeAsync(purchase, mConsumeFinishedListener);
+        if (isConnected()) {
+            Purchase purchase = purchases.get(product.base.id);
+            helper.consumeAsync(purchase, mConsumeFinishedListener);
+        }
     }
 
     // Called when consumption is complete
@@ -331,6 +333,14 @@ public class PurchasingBridge {
                 .replace('٩', '9');
 
         return _price;
+    }
+
+    public boolean isConnected() {
+        if (storePackageName.equals(ZARINPAL)) return true;
+        if (helper == null) return false;
+        if (helper.mDisposed) return false;
+        if (helper.iabConnection == null || !helper.iabConnection.mSetupDone) return false;
+        return true;
     }
 
     private String getSKUFromJson(String productJSON) {
