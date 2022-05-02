@@ -245,6 +245,19 @@ namespace UnityEngine.Purchasing
             }
             prod.Add("payouts", payoutsArray);
 
+            var zarinpalConfig = typeof(ProductDefinition).GetProperty("zarinpalConfig");
+			if (zarinpalConfig != null) {
+                var zarinpalConfigObject = zarinpalConfig.GetValue(product, null);
+                ZarinpalConfig zarin = zarinpalConfigObject as ZarinpalConfig;
+                if (zarin != null && !zarin.IsEmpty()) {
+                    var zarinpalDict = new Dictionary<string, object>();
+                    zarinpalDict["price"] = zarin.price;
+                    zarinpalDict["merchantId"] = zarin.merchantId;
+                    zarinpalDict["description"] = zarin.description;
+                    prod.Add("zarinpalConfig", zarinpalDict);
+                }
+            }
+
             return prod;
         }
 

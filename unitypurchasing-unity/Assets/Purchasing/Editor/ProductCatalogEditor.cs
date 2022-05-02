@@ -649,6 +649,7 @@ namespace UnityEditor.Purchasing
             private bool payoutsVisible = false;
             private bool googleVisible = false;
             private bool appleVisible = false;
+            private bool zarinpalVisible = false;
             private bool udpVisible = false;
 
             private bool idDuplicate = false;
@@ -863,6 +864,18 @@ namespace UnityEditor.Purchasing
                         EditorGUI.indentLevel++;
 
                         ShowAndProcessAppleConfigGui();
+
+                        EditorGUI.indentLevel--;
+                    }
+
+                    EditorGUILayout.Separator();
+
+                    zarinpalVisible = CompatibleGUI.Foldout(zarinpalVisible, "Zarinpal Configuration", true, s);
+                    if (zarinpalVisible)
+                    {
+                        EditorGUI.indentLevel++;
+
+                        ShowAndProcessZarinpalConfigGui();
 
                         EditorGUI.indentLevel--;
                     }
@@ -1112,6 +1125,26 @@ namespace UnityEditor.Purchasing
 
             }
 
+            void ShowAndProcessZarinpalConfigGui()
+            {
+                var fieldName = "zarinPrice";
+                BeginErrorBlock(validation, fieldName);
+                var priceStr = ShowEditTextFieldGuiAndGetValue(fieldName, "Price:", Item.zarinpalConfig == null || Item.zarinpalConfig.price == 0 ? string.Empty : Item.zarinpalConfig.price.ToString());
+
+                int priceDecimal;
+                if (int.TryParse(priceStr, out priceDecimal))
+                {
+                    Item.zarinpalConfig.price = priceDecimal;
+                }
+                else
+                {
+                    Item.zarinpalConfig.price = 0;
+                }
+                EndErrorBlock(validation, fieldName);
+
+                Item.zarinpalConfig.merchantId = ShowEditTextFieldGuiAndGetValue("zarinpalMerchantId","Merchant ID:", Item.zarinpalConfig.merchantId);
+                Item.zarinpalConfig.description = ShowEditTextFieldGuiAndGetValue("zarinpalDescription","Description:", Item.zarinpalConfig.description);
+            }
 
             /// <summary>
             /// Sets the validation results upon export of this item.
@@ -1262,6 +1295,7 @@ namespace UnityEditor.Purchasing
                 editor = editor_;
 
                 exporters.Add(new AppleXMLProductCatalogExporter());
+                exporters.Add(new GooglePlayProductCatalogExporter());
                 exporters.Add(new GooglePlayProductCatalogExporter());
             }
 

@@ -143,7 +143,7 @@ namespace UnityEngine.Purchasing
         /// <returns> The instance of the configuration builder with the new product added. </returns>
         public ConfigurationBuilder AddProduct(string id, ProductType type, IDs storeIDs)
         {
-            return AddProduct(id, type, storeIDs, (IEnumerable<PayoutDefinition>)null);
+            return AddProduct(id, type, storeIDs, (IEnumerable<PayoutDefinition>)null, null);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace UnityEngine.Purchasing
         /// <returns> The instance of the configuration builder with the new product added. </returns>
         public ConfigurationBuilder AddProduct(string id, ProductType type, IDs storeIDs, PayoutDefinition payout)
         {
-            return AddProduct(id, type, storeIDs, new List<PayoutDefinition> { payout });
+            return AddProduct(id, type, storeIDs, new List<PayoutDefinition> { payout }, null);
         }
 
         /// <summary>
@@ -166,8 +166,9 @@ namespace UnityEngine.Purchasing
         /// <param name="type"> The type of the product. </param>
         /// <param name="storeIDs"> The object representing store IDs the product is to be added to. </param>
         /// <param name="payouts"> The enumerator of the payout definitions of the product. </param>
+        /// <param name="zarinpalConfig"> The configs of zarinpal store. </param>
         /// <returns> The instance of the configuration builder with the new product added. </returns>
-        public ConfigurationBuilder AddProduct(string id, ProductType type, IDs storeIDs, IEnumerable<PayoutDefinition> payouts)
+        public ConfigurationBuilder AddProduct(string id, ProductType type, IDs storeIDs, IEnumerable<PayoutDefinition> payouts, ZarinpalConfig zarinpalConfig)
         {
             var specificId = id;
             // Extract our store specific ID if present, according to the current store.
@@ -175,6 +176,7 @@ namespace UnityEngine.Purchasing
                 specificId = storeIDs.SpecificIDForStore(factory.storeName, id);
             var product = new ProductDefinition(id, specificId, type);
             product.SetPayouts(payouts);
+            product.SetStoreConfig(zarinpalConfig);
             m_Products.Add(product);
 
             return this;
