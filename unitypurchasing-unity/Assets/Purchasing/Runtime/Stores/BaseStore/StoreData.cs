@@ -1,3 +1,4 @@
+using System.IO;
 using System.Collections.Generic;
 
 namespace UnityEngine.Purchasing
@@ -73,5 +74,25 @@ namespace UnityEngine.Purchasing
                 AppStore.Zarinpal, new StoreData { storePackageName = "zarinpal", bindURL = ""}
             }
         };
+
+        public static AppStore LoadStore()
+        {
+#if UNITY_EDITOR
+            string path = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Assets", "Resources", "BillingMode.json");
+            string billingMode = File.ReadAllText(path);
+            if (billingMode == null)
+            {
+                return AppStore.NotSpecified;
+            }
+            return StoreConfiguration.Deserialize(billingMode).androidStore;
+#endif
+            var textAsset = (Resources.Load("BillingMode") as TextAsset);
+            StoreConfiguration config = null;
+            if (null != textAsset)
+            {
+                config = StoreConfiguration.Deserialize(textAsset.text);
+            }
+            return config.androidStore;
+        }
     }
 }

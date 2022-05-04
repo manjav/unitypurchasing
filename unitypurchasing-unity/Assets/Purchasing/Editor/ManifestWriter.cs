@@ -11,17 +11,11 @@ class ManifestWriter : IPreprocessBuildWithReport
 
     public void OnPreprocessBuild(BuildReport report)
     {
-        // Load BillingMode
-        string path = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Assets", "Resources", "BillingMode.json");
-        string billingMode = File.ReadAllText(path);
-        if (billingMode == null)
-        {
-            return;
-        }
-        StoreConfiguration config = StoreConfiguration.Deserialize(billingMode);
+        // Load AppStore
+        AppStore appStore = StoreData.LoadStore();
 
         // Load Manifest Template
-        StoreData storeData = StoreData.data.ContainsKey(config.androidStore) ? StoreData.data[config.androidStore] : new StoreData();
+        StoreData storeData = StoreData.data.ContainsKey(appStore) ? StoreData.data[appStore] : new StoreData();
         string thisScriptDir = Path.GetDirectoryName(new System.Diagnostics.StackTrace(true).GetFrame(0).GetFileName());
         var manifestTempPath = Path.Combine(thisScriptDir, "AndroidManifestTemp.xml");
         string manifest = File.ReadAllText(manifestTempPath);
