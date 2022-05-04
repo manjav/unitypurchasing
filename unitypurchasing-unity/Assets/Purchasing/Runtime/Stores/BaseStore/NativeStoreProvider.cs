@@ -34,13 +34,13 @@ namespace UnityEngine.Purchasing
                     using (var pluginClass = new AndroidJavaClass("com.unity.purchasing.amazon.AmazonPurchasing"))
                     {
                         // Switch Android callbacks to the scripting thread, via ScriptingUnityCallback.
-                        var proxy = new JavaBridge (new ScriptingUnityCallback(callback, util));
-                        var instance = pluginClass.CallStatic<AndroidJavaObject> ("instance", proxy);
+                        var proxy = new JavaBridge(new ScriptingUnityCallback(callback, util));
+                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy);
                         // Hook up our amazon specific functionality.
-                        var extensions = new AmazonAppStoreStoreExtensions (instance);
-                        binder.RegisterExtension<IAmazonExtensions> (extensions);
-                        binder.RegisterConfiguration<IAmazonConfiguration> (extensions);
-                        return new AndroidJavaStore (instance);
+                        var extensions = new AmazonAppStoreStoreExtensions(instance);
+                        binder.RegisterExtension<IAmazonExtensions>(extensions);
+                        binder.RegisterConfiguration<IAmazonConfiguration>(extensions);
+                        return new AndroidJavaStore(instance);
                     }
 
                 case AppStore.Cafebazaar:
@@ -51,7 +51,7 @@ namespace UnityEngine.Purchasing
                     {
                         // Switch Android callbacks to the scripting thread, via ScriptingUnityCallback.
                         var proxy = new JavaBridge(new ScriptingUnityCallback(callback, util));
-                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy, storeData.storePackageName, storeData.bindURL);
+                        var instance = pluginClass.CallStatic<AndroidJavaObject>("instance", proxy, storeData.storePackageName, storeData.storeBindURL);
                         // Hook up our specific functionality.
                         var extensions = new CustomStoreExtensions(instance);
                         return new AndroidJavaStore(instance);

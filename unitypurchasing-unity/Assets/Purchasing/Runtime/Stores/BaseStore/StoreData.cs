@@ -6,12 +6,8 @@ namespace UnityEngine.Purchasing
     public class StoreData
     {
         // public string publicKey = "";
-        // public string bindURL = "";
-        // public string packageURL = "";
-        // public string downloadURL = "";
-
         public string storePackageName;
-        public string bindURL;
+        public string storeBindURL;
         public string manifestPermission;
         public string manifestQueries;
         public string manifestActivity;
@@ -21,7 +17,7 @@ namespace UnityEngine.Purchasing
             {
                 AppStore.Cafebazaar, new StoreData {
         storePackageName =  "com.farsitel.bazaar",
-                bindURL =   "ir.cafebazaar.pardakht.InAppBillingService.BIND",
+            storeBindURL =  "ir.cafebazaar.pardakht.InAppBillingService.BIND",
     manifestPermission =    "\n  <uses-permission android:name=\"com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR\" />\n",
         manifestQueries =   "\n  <queries> <package android:name=\"com.farsitel.bazaar\" /> </queries>",
         manifestActivity =  "\n    <activity"+
@@ -44,7 +40,7 @@ namespace UnityEngine.Purchasing
             {
                 AppStore.Myket, new StoreData {
         storePackageName =  "ir.mservices.market",
-                bindURL =   "ir.mservices.market.InAppBillingService.BIND",
+            storeBindURL =  "ir.mservices.market.InAppBillingService.BIND",
     manifestPermission =    "\n  <uses-permission android:name=\"ir.mservices.market.BIND\" />\n",
         manifestQueries =   "\n  <queries>" +
                             "\n    <package android:name=\"ir.mservices.market\" />"+
