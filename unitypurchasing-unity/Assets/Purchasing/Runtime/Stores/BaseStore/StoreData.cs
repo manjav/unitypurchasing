@@ -12,10 +12,12 @@ namespace UnityEngine.Purchasing
         public string manifestQueries;
         public string manifestActivity;
         public string manifestReceiver;
+        public string downloadURL = "";
         public static Dictionary<AppStore, StoreData> data = new Dictionary<AppStore, StoreData>
         {
             {
                 AppStore.Cafebazaar, new StoreData {
+            downloadURL =   "https://cafebazaar.ir/app/",
         storePackageName =  "com.farsitel.bazaar",
             storeBindURL =  "ir.cafebazaar.pardakht.InAppBillingService.BIND",
     manifestPermission =    "\n  <uses-permission android:name=\"com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR\" />\n",
@@ -39,6 +41,7 @@ namespace UnityEngine.Purchasing
             },
             {
                 AppStore.Myket, new StoreData {
+            downloadURL =   "https://myket.ir/app/",
         storePackageName =  "ir.mservices.market",
             storeBindURL =  "ir.mservices.market.InAppBillingService.BIND",
     manifestPermission =    "\n  <uses-permission android:name=\"ir.mservices.market.BIND\" />\n",
@@ -67,7 +70,10 @@ namespace UnityEngine.Purchasing
                 }
             },
             {
-                AppStore.Zarinpal, new StoreData { storePackageName = "zarinpal", bindURL = ""}
+                AppStore.GooglePlay, new StoreData { downloadURL = "https://play.google.com/store/apps/details?id=" }
+            },
+            {
+                AppStore.Zarinpal, new StoreData { storePackageName = "zarinpal", storeBindURL = "", downloadURL = "https://play.google.com/store/apps/details?id="}
             }
         };
 
