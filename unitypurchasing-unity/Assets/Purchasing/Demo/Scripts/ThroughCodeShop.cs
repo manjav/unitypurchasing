@@ -62,7 +62,7 @@ public class ThroughCodeShop : CodelessShop, IStoreListener
         var product = args.purchasedProduct;
         UpdateStats(product.definition.id);
 
-        Log($"Purchase Complete - Product: {product.definition.id}");
+        Log($"Purchase Complete - Product: {product.definition.id} {product.receipt}");
 
         //We return Complete, informing IAP that the processing on our side is done and the transaction can be closed.
         return PurchaseProcessingResult.Complete;
