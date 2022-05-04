@@ -662,7 +662,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uFBFE\uFEEA \u062F\u0648\u0631 \uFE91\uFEB0\u0646"
+  m_text: "\uFBFE\uFEEA \uFEA9\uFEED\uFEAD \uFE91\uFEB0\uFEE5"
   m_isRightToLeft: 1
   m_fontAsset: {fileID: 11400000, guid: fd6fbba19cd3837498a8f3f86f7d3e8f, type: 2}
   m_sharedMaterial: {fileID: 871936803216350348, guid: fd6fbba19cd3837498a8f3f86f7d3e8f,
@@ -2182,7 +2182,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -32, y: -32}
-  m_SizeDelta: {x: 480, y: 231.16}
+  m_SizeDelta: {x: 400, y: 231.16}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1587869379504262205
 MonoBehaviour:
