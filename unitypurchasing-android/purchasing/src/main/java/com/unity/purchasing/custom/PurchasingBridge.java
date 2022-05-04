@@ -45,6 +45,7 @@ public class PurchasingBridge {
     private final String storePackageName;
     private HashMap<String, Purchase> purchases;
     private Map<String, CustomProductDefination> definedProducts;
+    private String lastPurchasingSKU;
 
     public static void log(String message) {
         if (debugMode)
@@ -207,10 +208,10 @@ public class PurchasingBridge {
     public void Purchase(String productJSON, String developerPayload) {
         log("Purchase " + productJSON);
 
-        String sku = getSKUFromJson(productJSON);
-        CustomProductDefination product = definedProducts.get(sku);
+        lastPurchasingSKU = getSKUFromJson(productJSON);
+        CustomProductDefination product = definedProducts.get(lastPurchasingSKU);
         if (product == null) {
-            PurchaseFailureDescription description = new PurchaseFailureDescription(sku, PurchaseFailureReason.BillingUnavailable, "Json is invalid.", "");
+            PurchaseFailureDescription description = new PurchaseFailureDescription(lastPurchasingSKU, PurchaseFailureReason.BillingUnavailable, "Json is invalid.", "");
             PurchasingBridge.unityCallback.OnPurchaseFailed(description);
             return;
         }
@@ -220,7 +221,7 @@ public class PurchasingBridge {
             i.putExtra("sku", product.base.id);
             i.putExtra("amount", product.initialPrice);
             i.putExtra("merchantId", product.initialStoreId);
-            i.putExtra("callbackURL", "zarin://" + sku);
+            i.putExtra("callbackURL", "zarin://" + lastPurchasingSKU);
             i.putExtra("description", product.description);
             i.putExtra("autoVerification", product.base.type == ProductType.Consumable);
             getActivity().startActivity(i);
@@ -228,7 +229,7 @@ public class PurchasingBridge {
         }
 
         if (!isConnected()) {
-            PurchaseFailureDescription description = new PurchaseFailureDescription(sku, PurchaseFailureReason.BillingUnavailable, "Helper not Found!", "");
+            PurchaseFailureDescription description = new PurchaseFailureDescription(lastPurchasingSKU, PurchaseFailureReason.BillingUnavailable, "Helper not Found!", "");
             PurchasingBridge.unityCallback.OnPurchaseFailed(description);
             return;
         }
@@ -249,12 +250,12 @@ public class PurchasingBridge {
             }
 
             if (result.isFailure()) {
-                PurchaseFailureDescription description = getProperDescription("", result.getResponse(), result.getMessage());
+                PurchaseFailureDescription description = getProperDescription(lastPurchasingSKU, result.getResponse(), result.getMessage());
                 PurchasingBridge.unityCallback.OnPurchaseFailed(description);
                 return;
             }
 
-            Log.d(TAG, "Purchase successful.");
+            Log.d(TAG, "Purchase successful. " + purchase.getToken());
             purchases.put(purchase.getSku(), purchase);
 //            if (!Security.verifyPurchase(purchase.getOriginalJson(), purchase.getSignature())) {
 //                Log.e(TAG, "Invalid signature on purchase. Check to make " +
@@ -303,7 +304,11 @@ public class PurchasingBridge {
 
 
     public static PurchaseFailureDescription getProperDescription(String sku, int response, String message) {
-        return new PurchaseFailureDescription(sku, PurchaseFailureReason.Unknown, message, "Needs to detect!");
+        PurchaseFailureReason reason = PurchaseFailureReason.Unknown;
+        if(response == IabHelper.IABHELPER_BAD_RESPONSE){
+            reason = PurchaseFailureReason.UserCancelled;
+        }
+        return new PurchaseFailureDescription(sku, reason, message, "Needs to detect!");
     }
 
     private String uniformPrices(String price) {
