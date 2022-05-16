@@ -34,23 +34,23 @@ public class MainActivity extends Activity {
 
             @Override
             public void OnSetupFailed(String message) {
-                Log.i(PurchasingBridge.TAG, "OnSetupFailed: " + message);
+                PurchasingBridge.log("OnSetupFailed: " + message);
             }
 
             @Override
             public void OnProductsRetrieved(String message) {
-                Log.i(PurchasingBridge.TAG, "OnProductsRetrieved: " + message);
+                PurchasingBridge.log("OnProductsRetrieved: " + message);
             }
 
             @Override
             public void OnPurchaseSucceeded(String sku, String developerPayload, String transactionId) {
-                Log.i(PurchasingBridge.TAG, "OnPurchaseSucceeded: " + sku + ", " + transactionID + ", " + developerPayload);
+                PurchasingBridge.log("OnPurchaseSucceeded: " + sku + ", " + transactionID + ", " + developerPayload);
                 transactionID = transactionId;
             }
 
             @Override
             public void OnPurchaseFailed(String message) {
-                Log.i(PurchasingBridge.TAG, "OnPurchaseFailed: " + message);
+                PurchasingBridge.log("OnPurchaseFailed: " + message);
             }
         },"com.farsitel.bazaar", "ir.cafebazaar.pardakht.InAppBillingService.BIND");
     }

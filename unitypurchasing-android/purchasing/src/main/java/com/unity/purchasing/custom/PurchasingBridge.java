@@ -34,7 +34,6 @@ public class PurchasingBridge {
 
     public static String TAG = "Purchasing";
     public static String ZARINPAL = "zarinpal";
-    private static boolean debugMode = true;
 
     public static IStoreCallback unityCallback;
     public static Activity testActivity;
@@ -48,8 +47,9 @@ public class PurchasingBridge {
     private String lastPurchasingSKU;
 
     public static void log(String message) {
-        if (debugMode)
-            Log.i(TAG, message);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, message);
+        }
     }
 
     public static PurchasingBridge instance(IUnityCallback bridge, String storePackageName, String bindURL) {
@@ -110,7 +110,6 @@ public class PurchasingBridge {
         log("RetrieveProducts " + json);
         pendingJsonProducts = json;
 
-
         if (!isConnected()) {
             return;
         }
@@ -145,7 +144,7 @@ public class PurchasingBridge {
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         @Override
         public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-            Log.d(TAG, "Query inventory finished.");
+            log("Query inventory finished.");
 
             // Have we been disposed of in the meantime? If so, quit.
             if (!isConnected()) {
@@ -240,7 +239,7 @@ public class PurchasingBridge {
     // Callback for when a purchase is finished
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
         public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+            log("Purchase finished: " + result + ", purchase: " + purchase);
 
             // if we were disposed of in the meantime, quit.
             if (!isConnected()) {
@@ -255,7 +254,7 @@ public class PurchasingBridge {
                 return;
             }
 
-            Log.d(TAG, "Purchase successful. " + purchase.getToken());
+            log("Purchase successful. " + purchase.getToken());
             purchases.put(purchase.getSku(), purchase);
 //            if (!Security.verifyPurchase(purchase.getOriginalJson(), purchase.getSignature())) {
 //                Log.e(TAG, "Invalid signature on purchase. Check to make " +
@@ -277,6 +276,7 @@ public class PurchasingBridge {
             ZarinpalActivity.verify(getActivity(), product, transactionID);
             return;
         }
+
         if (isConnected()) {
             Purchase purchase = purchases.get(product.base.id);
             helper.consumeAsync(purchase, mConsumeFinishedListener);
@@ -305,7 +305,7 @@ public class PurchasingBridge {
 
     public static PurchaseFailureDescription getProperDescription(String sku, int response, String message) {
         PurchaseFailureReason reason = PurchaseFailureReason.Unknown;
-        if(response == IabHelper.IABHELPER_BAD_RESPONSE){
+        if (response == IabHelper.IABHELPER_BAD_RESPONSE) {
             reason = PurchaseFailureReason.UserCancelled;
         }
         return new PurchaseFailureDescription(sku, reason, message, "Needs to detect!");

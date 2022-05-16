@@ -80,6 +80,7 @@ public abstract class IAB {
                     if (mPurchaseListener != null) {
                         mPurchaseListener.onIabPurchaseFinished(result, null);
                     }
+                    return;
                 }
 
                 Purchase purchase = null;
@@ -88,14 +89,16 @@ public abstract class IAB {
                     String sku = purchase.getSku();
 
                     // Verify signature
-                    if (mSignatureBase64 != null && !Security.verifyPurchase(mSignatureBase64, purchaseData, dataSignature)) {
+                    if (!Security.verifyPurchase(mSignatureBase64, purchaseData, dataSignature)) {
                         logger.logError("Purchase signature verification FAILED for sku " + sku);
                         result = new IabResult(IABHELPER_VERIFICATION_FAILED,
                                 "Signature verification failed for sku " + sku);
                         if (mPurchaseListener != null) {
                             mPurchaseListener.onIabPurchaseFinished(result, purchase);
                         }
+                        return;
                     }
+
                     logger.logDebug("Purchase signature successfully verified.");
                 } catch (JSONException e) {
                     logger.logError("Failed to parse purchase data.");
@@ -104,6 +107,7 @@ public abstract class IAB {
                     if (mPurchaseListener != null) {
                         mPurchaseListener.onIabPurchaseFinished(result, null);
                     }
+                    return;
                 }
 
                 if (mPurchaseListener != null) {
@@ -150,7 +154,7 @@ public abstract class IAB {
             logger.logDebug("Bundle with null response code, assuming OK (known issue)");
             return BILLING_RESPONSE_RESULT_OK;
         } else if (o instanceof Integer) {
-            return ((Integer) o).intValue();
+            return (Integer) o;
         } else if (o instanceof Long) {
             return (int) ((Long) o).longValue();
         } else {
@@ -167,7 +171,7 @@ public abstract class IAB {
             logger.logError("Intent with no response code, assuming OK (known issue)");
             return BILLING_RESPONSE_RESULT_OK;
         } else if (o instanceof Integer) {
-            return ((Integer) o).intValue();
+            return (Integer) o;
         } else if (o instanceof Long) {
             return (int) ((Long) o).longValue();
         } else {

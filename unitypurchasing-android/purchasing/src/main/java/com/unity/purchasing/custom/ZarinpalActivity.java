@@ -1,15 +1,8 @@
 package com.unity.purchasing.custom;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
@@ -17,20 +10,13 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.unity.purchasing.common.IStoreCallback;
-import com.unity.purchasing.common.ProductType;
-import com.unity.purchasing.common.PurchaseFailureDescription;
-import com.unity.purchasing.common.PurchaseFailureReason;
 import com.unity.purchasing.custom.util.CustomProductDefination;
 import com.unity.purchasing.custom.util.HttpHelper;
 import com.unity.purchasing.custom.util.Prefs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.prefs.Preferences;
 
 public class ZarinpalActivity extends Activity {
     private static final String REQUEST_URI = "https://api.zarinpal.com/pg/v4/payment/request.json";
@@ -165,19 +151,19 @@ public class ZarinpalActivity extends Activity {
                     progressBar.setVisibility(View.GONE);
                 }
 
-                Log.i("purchasing", "onPageFinished " + url);
+                PurchasingBridge.log("onPageFinished " + url);
                 if (url.contains(callbackURL)) {
                     Uri uri = Uri.parse(url);
                     String status = uri.getQueryParameter("Status");
                     if (status != null && status.equals("OK")) {
-                        Log.d("purchasing", "Status OK trying to verify purchase...");
+                        PurchasingBridge.log("Status OK trying to verify purchase...");
                         String authority = uri.getQueryParameter("Authority");
                         PurchasingBridge.unityCallback.OnPurchaseSucceeded(sku, authority, authority);
-                        Log.d("purchasing", "Ignore verifying purchase cause autoVerify is set to false : ");
+                        PurchasingBridge.log("Ignore verifying purchase cause autoVerify is set to false : ");
                         close();
                     } else {
                         PurchasingBridge.unityCallback.OnPurchaseFailed(PurchasingBridge.getProperDescription(sku, -1, "Purchase failed!"));
-                        Log.d("purchasing", "purchase failed : " + status);
+                        PurchasingBridge.log("purchase failed : " + status);
                         close();
                     }
                 }
@@ -198,7 +184,7 @@ public class ZarinpalActivity extends Activity {
     }
 
     public static void verify(Activity activity, CustomProductDefination product, String transactionID) {
-
+        PurchasingBridge.log("verify " + product.initialStoreId + " " + transactionID);
         JSONObject jsonParam = new JSONObject();
         try {
             jsonParam.put("authority", transactionID);
