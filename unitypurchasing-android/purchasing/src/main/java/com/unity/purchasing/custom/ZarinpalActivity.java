@@ -120,6 +120,8 @@ public class ZarinpalActivity extends Activity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    PurchasingBridge.unityCallback.OnPurchaseFailed(PurchasingBridge.getProperDescription(sku, IabHelper.IABHELPER_BAD_RESPONSE, e.getMessage()));
+                    close();
                 }
             });
         });
