@@ -254,6 +254,7 @@ namespace UnityEngine.Purchasing
                     zarinpalDict["price"] = zarin.price;
                     zarinpalDict["merchantId"] = zarin.merchantId;
                     zarinpalDict["description"] = zarin.description;
+                    zarinpalDict["autoVerification"] = zarin.autoVerification;
                     prod.Add("zarinpalConfig", zarinpalDict);
                 }
             }

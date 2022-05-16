@@ -222,9 +222,8 @@ public class PurchasingBridge {
             i.putExtra("sku", product.base.id);
             i.putExtra("amount", product.initialPrice);
             i.putExtra("merchantId", product.initialStoreId);
-            i.putExtra("callbackURL", "zarin://" + lastPurchasingSKU);
             i.putExtra("description", product.description);
-            i.putExtra("autoVerification", product.base.type == ProductType.Consumable);
+            i.putExtra("callbackURL", "zarin://" + lastPurchasingSKU);
             getActivity().startActivity(i);
             return;
         }
@@ -270,12 +269,15 @@ public class PurchasingBridge {
     public void FinishTransaction(String productJSON, String transactionID) {
         log("Finishing transaction " + productJSON + " - " + transactionID);
         CustomProductDefination product = definedProducts.get(getSKUFromJson(productJSON));
-        if (product == null || !product.base.type.equals(ProductType.Consumable)) {
+
+        if (storePackageName.equals(ZARINPAL)) {
+            if (product.autoVerification) {
+                ZarinpalActivity.verify(getActivity(), product, transactionID);
+            }
             return;
         }
 
-        if (storePackageName.equals(ZARINPAL)) {
-            ZarinpalActivity.verify(getActivity(), product, transactionID);
+        if (product == null || !product.base.type.equals(ProductType.Consumable)) {
             return;
         }
 

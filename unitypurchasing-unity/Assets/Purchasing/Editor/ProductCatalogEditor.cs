@@ -1144,6 +1144,10 @@ namespace UnityEditor.Purchasing
 
                 Item.zarinpalConfig.merchantId = ShowEditTextFieldGuiAndGetValue("zarinpalMerchantId","Merchant ID:", Item.zarinpalConfig.merchantId);
                 Item.zarinpalConfig.description = ShowEditTextFieldGuiAndGetValue("zarinpalDescription","Description:", Item.zarinpalConfig.description);
+
+                var autoVerification = Item.zarinpalConfig.autoVerification;
+                autoVerification = EditorGUILayout.Toggle(new GUIContent("Auto Verification", "Verify automatically after purchase succeed."),autoVerification);
+                Item.zarinpalConfig.autoVerification = autoVerification;
             }
 
             /// <summary>

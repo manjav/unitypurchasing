@@ -11,6 +11,7 @@ public class CustomProductDefination {
     public int initialPrice;
     public String initialStoreId;
     public String description;
+    public boolean autoVerification;
 
     public CustomProductDefination(JSONObject json) {
         try {
@@ -22,6 +23,7 @@ public class CustomProductDefination {
                 initialPrice = zarinpal.getInt("price");
                 initialStoreId = zarinpal.getString("merchantId");
                 description = zarinpal.getString("description");
+                autoVerification = zarinpal.getBoolean("autoVerification");
             }
         } catch (JSONException e) {
             e.printStackTrace();

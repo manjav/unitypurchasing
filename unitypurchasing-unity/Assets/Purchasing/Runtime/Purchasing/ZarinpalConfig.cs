@@ -23,6 +23,11 @@ namespace UnityEngine.Purchasing
         /// </summary>
         public string description;
 
+        /// <summary>
+        /// The autoVerification as a bool.
+        /// </summary>
+        public bool autoVerification;
+
         internal bool IsEmpty()
         {
             return string.IsNullOrWhiteSpace(merchantId);
