@@ -232,6 +232,7 @@ public class ZarinpalActivity extends Activity {
             registerContact(null);
             return;
         }
+        PurchasingBridge.unityCallback.OnPurchaseFailed(PurchasingBridge.getProperDescription(sku, IabHelper.IABHELPER_BAD_RESPONSE, "Canceled by User."));
         super.onBackPressed();
     }
 }
