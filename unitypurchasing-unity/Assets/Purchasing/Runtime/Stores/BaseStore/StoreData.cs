@@ -73,7 +73,7 @@ namespace UnityEngine.Purchasing
                 AppStore.GooglePlay, new StoreData { downloadURL = "https://play.google.com/store/apps/details?id=" }
             },
             {
-                AppStore.Zarinpal, new StoreData { storePackageName = "zarinpal", storeBindURL = "", downloadURL = "https://play.google.com/store/apps/details?id="}
+                AppStore.Zarinpal, new StoreData { storePackageName = "zarinpal", bindURL = "", downloadURL = "https://play.google.com/store/apps/details?id="}
             }
         };
 
