@@ -83,8 +83,6 @@ public class PurchasingBridge {
         storePackageName = packageName;
         log("Setup start for " + storePackageName + " " + bindURL);
         if (storePackageName.equals(ZARINPAL)) {
-            if (pendingJsonProducts != null)
-                RetrieveProducts(pendingJsonProducts);
             return;
         }
 
@@ -111,6 +109,10 @@ public class PurchasingBridge {
         pendingJsonProducts = json;
 
         if (!isConnected()) {
+            return;
+        }
+        if (definedProducts != null) {
+            fillProductDescription(null);
             return;
         }
 
