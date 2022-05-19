@@ -26,8 +26,39 @@ class ManifestWriter : IPreprocessBuildWithReport
         manifest = manifest.Replace("___MarketReceivers___", storeData.manifestReceiver);
 
         // Generate Plugins/Android/AndroidManifest.xml
-        string androidManifestPath = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Assets", "Plugins", "Android", "AndroidManifest.xml");
-        File.WriteAllText(Path.Combine(androidManifestPath, "AndroidManifest.xml"), manifest);
+        var pluginsDir = new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Plugins"));
+        if (!pluginsDir.Exists)
+        {
+            pluginsDir.Create();
+        }
+        var androidDir = new DirectoryInfo(Path.Combine(pluginsDir.FullName, "Android"));
+        if (!androidDir.Exists)
+        {
+            androidDir.Create();
+        }
+        File.WriteAllText(Path.Combine(androidDir.FullName, "AndroidManifest.xml"), manifest);
+
+        // Provide appropriate aar files
+        var storesPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Purchasing", "Plugins", "UnityPurchasing", "Android", "Stores");
+        var storesDir = new DirectoryInfo(storesPath);
+        if (!storesDir.Exists)
+        {
+            storesDir.Create();
+        }
+        foreach (var store in storesDir.GetFiles())
+        {
+            store.Delete();
+        }
+        if (storeData.aarFiles != null)
+        {
+            foreach (var aar in storeData.aarFiles)
+            {
+                var storeName = aar + ".aar";
+                var sourceFile = Path.Combine(thisScriptDir, storeName);
+                var destFile = Path.Combine(storesDir.FullName, storeName);
+                File.Copy(sourceFile, destFile);
+            }
+        }
     }
 }
 #endif
