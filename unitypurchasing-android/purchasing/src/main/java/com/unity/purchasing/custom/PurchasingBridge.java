@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+import com.unity.purchasing.BuildConfig;
 import com.unity.purchasing.common.IStoreCallback;
 import com.unity.purchasing.common.IUnityCallback;
 import com.unity.purchasing.common.InitializationFailureReason;
@@ -99,8 +100,9 @@ public class PurchasingBridge {
             log("Setup Succeed.");
 
             // IAB is fully set up. Now, let's get an inventory of stuff we own.
-            if (pendingJsonProducts != null)
+            if (pendingJsonProducts != null) {
                 RetrieveProducts(pendingJsonProducts);
+            }
         });
     }
 
@@ -109,10 +111,7 @@ public class PurchasingBridge {
         pendingJsonProducts = json;
 
         if (!isConnected()) {
-            return;
-        }
-        if (definedProducts != null) {
-            fillProductDescription(null);
+            log("RetrieveProducts not complete. Disconnected!");
             return;
         }
 
@@ -127,7 +126,9 @@ public class PurchasingBridge {
                 definedProducts.put(product.base.id, product);
                 skusList.add(product.base.id);
             }
+            log("RetrieveProducts definedProducts: " + definedProducts.size());
         } catch (JSONException e) {
+            log(e.getMessage());
             e.printStackTrace();
             unityCallback.OnSetupFailed(InitializationFailureReason.NoProductsAvailable);
         }
@@ -176,6 +177,7 @@ public class PurchasingBridge {
             if (inv != null) {
                 skuDetails = inv.getSkuDetails(sku);
             }
+            log("fillProductDescription " + skuDetails.toString());
 
             String price = skuDetails != null ? uniformPrices(skuDetails.getPrice()) : String.valueOf(product.initialPrice);
             ProductMetadata metadata = new ProductMetadata(
@@ -309,8 +311,14 @@ public class PurchasingBridge {
 
     public static PurchaseFailureDescription getProperDescription(String sku, int response, String message) {
         PurchaseFailureReason reason = PurchaseFailureReason.Unknown;
-        if (response == IabHelper.IABHELPER_BAD_RESPONSE) {
-            reason = PurchaseFailureReason.UserCancelled;
+        switch (response) {
+            case IabHelper.IABHELPER_BAD_RESPONSE:
+            case IabHelper.IABHELPER_USER_CANCELLED:
+                reason = PurchaseFailureReason.UserCancelled;
+                break;
+            case IabHelper.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE:
+                reason = PurchaseFailureReason.BillingUnavailable;
+                break;
         }
         return new PurchaseFailureDescription(sku, reason, message, "Needs to detect!");
     }
