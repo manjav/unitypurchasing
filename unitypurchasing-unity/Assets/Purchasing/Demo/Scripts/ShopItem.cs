@@ -27,7 +27,6 @@ public class ShopItem : MonoBehaviour
         descriptionText.text = product.metadata.localizedDescription;
         button.interactable = !product.hasReceipt;
         return this;
-
     }
 
     public void OnClick()

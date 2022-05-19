@@ -39,7 +39,7 @@ public class ThroughCodeShop : CodelessShop, IStoreListener
         }
         foreach (var p in controller.products.all)
         {
-            Log(p.definition.id);
+            Log($"{p.definition.id} {p.metadata.localizedPrice}");
             if (shopItems.ContainsKey(p.definition.id))
             {
                 shopItems[p.definition.id].Init(p, m_StoreController.InitiatePurchase);
@@ -62,7 +62,7 @@ public class ThroughCodeShop : CodelessShop, IStoreListener
         var product = args.purchasedProduct;
         UpdateStats(product.definition.id);
 
-        Log($"Purchase Complete - Product: {product.definition.id} {product.receipt}");
+        Log($"Purchase Complete - Product: {product.definition.id} {product.receipt} {product.metadata.localizedPrice}");
 
         //We return Complete, informing IAP that the processing on our side is done and the transaction can be closed.
         return PurchaseProcessingResult.Complete;

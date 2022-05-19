@@ -523,7 +523,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fd6fbba19cd3837498a8f3f86f7d3e8f, type: 2}
   m_sharedMaterial: {fileID: 871936803216350348, guid: fd6fbba19cd3837498a8f3f86f7d3e8f,
@@ -595,7 +595,7 @@ MonoBehaviour:
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
   preserveNumbers: 0
   farsi: 1
-  originalText: New Text
+  originalText: 
   fixTags: 1
   forceFix: 0
 --- !u!222 &98708369
@@ -663,7 +663,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uFBFE\uFEEA \uFEA9\uFEED\uFEAD \uFE91\uFEB0\uFEE5"
+  m_text: "\uFBFE\uFEEA \u062F\u0648\u0631 \uFE91\uFEB0\u0646"
   m_isRightToLeft: 1
   m_fontAsset: {fileID: 11400000, guid: fd6fbba19cd3837498a8f3f86f7d3e8f, type: 2}
   m_sharedMaterial: {fileID: 871936803216350348, guid: fd6fbba19cd3837498a8f3f86f7d3e8f,
@@ -701,7 +701,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -6
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

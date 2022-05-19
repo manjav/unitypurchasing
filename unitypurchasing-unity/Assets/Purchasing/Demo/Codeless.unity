@@ -700,7 +700,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -6
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2299,7 +2299,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vehicle: {fileID: 1057151766}
-  consoleText: {fileID: 0}
+  consoleText: {fileID: 98708368}
 --- !u!1 &1587869380155104685
 GameObject:
   m_ObjectHideFlags: 0
