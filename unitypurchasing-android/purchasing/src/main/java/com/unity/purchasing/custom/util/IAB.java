@@ -89,7 +89,7 @@ public abstract class IAB {
                     String sku = purchase.getSku();
 
                     // Verify signature
-                    if (!Security.verifyPurchase(mSignatureBase64, purchaseData, dataSignature)) {
+                    if (mSignatureBase64 != null && !Security.verifyPurchase(mSignatureBase64, purchaseData, dataSignature)) {
                         logger.logError("Purchase signature verification FAILED for sku " + sku);
                         result = new IabResult(IABHELPER_VERIFICATION_FAILED,
                                 "Signature verification failed for sku " + sku);
