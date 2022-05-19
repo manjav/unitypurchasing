@@ -13,8 +13,14 @@ namespace UnityEngine.Purchasing
         public string manifestActivity;
         public string manifestReceiver;
         public string downloadURL = "";
+        public List<string> aarFiles;
         public static Dictionary<AppStore, StoreData> data = new Dictionary<AppStore, StoreData>
         {
+            {
+                AppStore.AmazonAppStore, new StoreData {
+                    aarFiles = new List<string>{"AmazonAppStore"}
+                }
+            },
             {
                 AppStore.Cafebazaar, new StoreData {
             downloadURL =   "https://cafebazaar.ir/app/",
@@ -36,7 +42,8 @@ namespace UnityEngine.Purchasing
                             "\n        <action android:name=\"com.farsitel.bazaar.skuDetail\" />" +
                             "\n        <action android:name=\"com.farsitel.bazaar.consume\" />" +
                             "\n      </intent-filter>" +
-                            "\n    </receiver>"
+                            "\n    </receiver>",
+                aarFiles = new List<string>{ "purchasing-release" }
                 }
             },
             {
@@ -66,14 +73,23 @@ namespace UnityEngine.Purchasing
                             "\n        <action android:name=\"ir.mservices.market.skuDetail\" />" +
                             "\n        <action android:name=\"ir.mservices.market.consume\" />" +
                             "\n      </intent-filter>" +
-                            "\n    </receiver>"
+                            "\n    </receiver>",
+                aarFiles = new List<string>{ "purchasing-release" }
                 }
             },
             {
-                AppStore.GooglePlay, new StoreData { downloadURL = "https://play.google.com/store/apps/details?id=" }
+                AppStore.GooglePlay, new StoreData {
+                downloadURL = "https://play.google.com/store/apps/details?id=" ,
+                aarFiles = new List<string>{ "billing-3.0.3" }
+                }
             },
             {
-                AppStore.Zarinpal, new StoreData { storePackageName = "zarinpal", bindURL = "", downloadURL = "https://play.google.com/store/apps/details?id="}
+                AppStore.Zarinpal, new StoreData {
+                storePackageName = "zarinpal",
+                bindURL = "",
+                downloadURL = "https://play.google.com/store/apps/details?id=",
+                aarFiles = new List<string>{ "purchasing-release" }
+                }
             }
         };
 
