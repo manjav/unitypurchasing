@@ -120,7 +120,7 @@ public class PurchasingBridge {
         List<String> skusList = new ArrayList<>();
         definedProducts = new HashMap<>();
         try {
-            JSONArray jsonArray = new JSONArray(pendingJsonProducts);
+            JSONArray jsonArray = new JSONArray(json);
             for (int i = 0; i < jsonArray.length(); ++i) {
                 JSONObject value = jsonArray.getJSONObject(i);
                 CustomProductDefination product = new CustomProductDefination(value);
